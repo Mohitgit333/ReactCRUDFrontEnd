@@ -8,14 +8,15 @@ const Read = () => {
 
   function getData() {
     axios
-      .get("https://localhost:7282/api/Product")
+      // .get("https://localhost:7282/api/Product")
+      .get("https://mohitwebapp111-d6fpatffdgg6g8gq.centralindia-01.azurewebsites.net/api/Product")
       .then((res) => {
         setData(res.data);
       });
   }
 
   function handleDelete(id){
-    axios.delete(`https://localhost:7282/api/Product/${id}`
+    axios.delete(`https://mohitwebapp111-d6fpatffdgg6g8gq.centralindia-01.azurewebsites.net/api/Product/${id}`
 
     ).then(()=>{
       getData();
