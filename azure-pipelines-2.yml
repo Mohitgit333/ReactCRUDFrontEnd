@@ -1,0 +1,54 @@
+trigger:
+- main
+
+pool:
+  name: MohitAgentPool555
+  demands:
+  - Agent.Name -equals MohitAgentPool555
+
+steps:
+
+# --- Use Node.js 18 ---
+- task: NodeTool@0
+  displayName: 'Use Node.js 18'
+  inputs:
+    versionSpec: '18.x'
+
+# --- Install dependencies ---
+- script: |
+    npm install
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Install React dependencies'
+
+# --- Build React App ---
+- script: |
+    npm run build
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Build React App'
+
+# --- Verify build output ---
+- task: CmdLine@2
+  displayName: 'Check build output'
+  inputs:
+    script: |
+      dir "$(System.DefaultWorkingDirectory)\build"
+
+# --- Package React build output ---
+- task: ArchiveFiles@2
+  displayName: 'Create React Deployment Package'
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)\build'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)\reactfrontend.zip'
+    replaceExistingArchive: true
+
+# --- Deploy to Azure Web App ---
+- task: AzureWebApp@1
+  displayName: 'Deploy React Frontend to Azure Web App'
+  inputs:
+    azureSubscription: 'MukeshServiceConnection555'
+    appType: 'webApp'
+    appName: 'MukeshWebApp1111'
+    package: '$(Build.ArtifactStagingDirectory)\reactfrontend.zip'
+    deploymentMethod: 'zipDeploy'
