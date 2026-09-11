@@ -1,4 +1,3 @@
-
 trigger:
 - main
 
@@ -33,11 +32,12 @@ steps:
   workingDirectory: $(System.DefaultWorkingDirectory)
   displayName: 'Verify React source'
 
-# --- Use stable Node.js version ---
-- task: NodeTool@0
+# ---- Set Node.js version ----
+- task: UseNode@1
   inputs:
-    versionSpec: '18.x'
+    version: '18.x'
   displayName: 'Use Node.js 18'
+
 
 # --- Install dependencies ---
 - script: npm install
@@ -49,7 +49,22 @@ steps:
   workingDirectory: $(System.DefaultWorkingDirectory)
   displayName: 'Build React App'
 
-# --- Verify build output (Windows agent) ---
+# --- Verify React build files ---
+- script: |
+    echo ===== BUILD FOLDER =====
+    dir "$(System.DefaultWorkingDirectory)\build"
+
+    echo.
+    echo ===== MANIFEST CHECK =====
+    if exist "$(System.DefaultWorkingDirectory)\build\manifest.json" (
+        echo manifest.json FOUND
+    ) else (
+        echo ERROR: manifest.json NOT FOUND
+        exit /b 1
+    )
+  displayName: 'Verify React build files'
+
+# --- Verify build output ---
 - script: dir "$(System.DefaultWorkingDirectory)\build"
   displayName: 'Check build output'
 
@@ -72,4 +87,3 @@ steps:
     appName: 'MukeshWebApp1111'
     package: '$(Build.ArtifactStagingDirectory)/reactfrontend.zip'
     deploymentMethod: 'zipDeploy'
-
