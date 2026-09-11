@@ -19,6 +19,8 @@ const Create=()=>{
     }
     return <>
     <form onSubmit={handleSubmit}>
+
+      <label  className="form-label">Dummy Data</label>
   <div className="mb-3">
     <label  className="form-label">Name</label>
     <input type="text" onChange={(e)=>SetName(e.target.value)} className="form-control" />
